@@ -18,4 +18,14 @@ model Blogs {
   views      Int      @default(0)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now())
+  Users      Users?   @relation(fields: [usersEmail], references: [email])
+  usersEmail String?
+}
+
+model Users {
+  name     String
+  email    String  @id
+  password String?
+  photo    String
+  blogs    Blogs[]
 }
