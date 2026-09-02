@@ -28,4 +28,28 @@ model Users {
   password String?
   photo    String
   blogs    Blogs[]
+  posts    Post[]
+}
+
+model Post {
+  id               Int      @id @default(autoincrement())
+  title            String
+  description      String
+  content          String?
+  thumbnail        String?
+  liveUrl          String?
+  githubUrl        String?
+  backendGithubUrl String?
+  tags             String[]
+  category         String?
+  serial           Int      @default(0)
+  isFeatured       Boolean  @default(false)
+  isPublished      Boolean  @default(true)
+  views            Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  Users            Users?   @relation(fields: [usersEmail], references: [email])
+  usersEmail       String?
+
+  @@index([serial])
 }

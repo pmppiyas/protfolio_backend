@@ -1,13 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import dotenv from "dotenv";
 import http, { Server } from "http";
 import app from "./app.js";
 import { prisma } from "./config/db.js";
-
-dotenv.config();
+import config from "./config/index.js";
 
 let server: Server;
-const PORT = process.env.PORT || 3000;
+const PORT = config.port || 5000;
 
 async function connectDB() {
   try {

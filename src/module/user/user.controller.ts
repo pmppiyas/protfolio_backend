@@ -17,6 +17,20 @@ const googleLogin = catchAsync(
   }
 );
 
-export const AUthControllers = {
+const credentialLogin = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const login = await AuthServices.credentialLogin(req.body);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: "Login successfully",
+      data: login,
+    });
+  }
+);
+
+export const AuthControllers = {
   googleLogin,
+  credentialLogin,
 };
