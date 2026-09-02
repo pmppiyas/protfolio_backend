@@ -10,42 +10,41 @@ const createBlog = async (blogData: Prisma.BlogsCreateInput) => {
 };
 
 const getAllBlogs = async () => {
-  const blogs = await prisma.blogs.findMany();
+  const blogs = await prisma.blogs.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
   return blogs;
 };
 
 const getByBlogId = async (id: number) => {
-  const result = await prisma.$transaction(async (tx) => {
-    const blog = await tx.blogs.findUnique({
-      where: { id },
-    });
-
-    await tx.blogs.update({
-      where: {
-        id,
-      },
-      data: {
-        views: {
-          increment: 1,
-        },
-      },
-    });
-    return blog;
+  const blog = await prisma.blogs.findUnique({
+    where: { id },
   });
-  return result;
+
+  if (!blog) return null;
+
+  const updatedBlog = await prisma.blogs.update({
+    where: { id },
+    data: {
+      views: {
+        increment: 1,
+      },
+    },
+  });
+
+  return updatedBlog;
 };
 
 const updateBlog = async (id: number, payload: Prisma.BlogsUpdateInput) => {
-  const result = await prisma.$transaction(async (tx) => {
-    const update = tx.blogs.update({
-      where: {
-        id,
-      },
-      data: payload,
-    });
-    return update;
+  const update = await prisma.blogs.update({
+    where: {
+      id,
+    },
+    data: payload,
   });
-  return result;
+  return update;
 };
 
 const deletePost = async (id: number) => {

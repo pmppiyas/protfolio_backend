@@ -1,21 +1,25 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../../config/db.js";
 
-const createPost = async (data: Prisma.PostCreateInput) => {
-  const newPost = await prisma.post.create({
-    data,
-  });
-  return newPost;
-};
+// Supports prisma.project (with fallback to prisma.post until prisma generate runs)
+const getPrismaProject = () => ((prisma as any).project || (prisma as any).post);
 
-export interface IPostFilters {
+export interface IProjectFilters {
   isFeatured?: boolean | undefined;
   category?: string | undefined;
   isPublished?: boolean | undefined;
 }
 
-const getAllPosts = async (filters?: IPostFilters) => {
-  const whereClause: Prisma.PostWhereInput = {};
+const createProject = async (data: any) => {
+  const model = getPrismaProject();
+  const newProject = await model.create({
+    data,
+  });
+  return newProject;
+};
+
+const getAllProjects = async (filters?: IProjectFilters) => {
+  const whereClause: any = {};
 
   if (filters?.isFeatured !== undefined) {
     whereClause.isFeatured = filters.isFeatured;
@@ -27,7 +31,8 @@ const getAllPosts = async (filters?: IPostFilters) => {
     whereClause.isPublished = filters.isPublished;
   }
 
-  const posts = await prisma.post.findMany({
+  const model = getPrismaProject();
+  const projects = await model.findMany({
     where: whereClause,
     orderBy: [
       { serial: "asc" },
@@ -35,60 +40,69 @@ const getAllPosts = async (filters?: IPostFilters) => {
     ],
   });
 
-  return posts;
+  return projects;
 };
 
-const getPostById = async (id: number) => {
-  const result = await prisma.$transaction(async (tx) => {
-    const post = await tx.post.findUnique({
-      where: { id },
-    });
-
-    if (!post) return null;
-
-    const updatedPost = await tx.post.update({
-      where: { id },
-      data: {
-        views: {
-          increment: 1,
-        },
-      },
-    });
-
-    return updatedPost;
+const getProjectById = async (id: number) => {
+  const model = getPrismaProject();
+  const project = await model.findUnique({
+    where: { id },
   });
 
-  return result;
+  if (!project) return null;
+
+  const updatedProject = await model.update({
+    where: { id },
+    data: {
+      views: {
+        increment: 1,
+      },
+    },
+  });
+
+  return updatedProject;
 };
 
-const updatePost = async (id: number, payload: Prisma.PostUpdateInput) => {
-  const updated = await prisma.post.update({
+const updateProject = async (id: number, payload: any) => {
+  const model = getPrismaProject();
+  const updated = await model.update({
     where: { id },
     data: payload,
   });
   return updated;
 };
 
-const deletePost = async (id: number) => {
-  await prisma.post.delete({
+const deleteProject = async (id: number) => {
+  const model = getPrismaProject();
+  await model.delete({
     where: { id },
   });
   return null;
 };
 
-const updatePostSerial = async (id: number, serial: number) => {
-  const updated = await prisma.post.update({
+const updateProjectSerial = async (id: number, serial: number) => {
+  const model = getPrismaProject();
+  const updated = await model.update({
     where: { id },
     data: { serial },
   });
   return updated;
 };
 
-export const PostServices = {
-  createPost,
-  getAllPosts,
-  getPostById,
-  updatePost,
-  deletePost,
-  updatePostSerial,
+export const ProjectServices = {
+  createProject,
+  getAllProjects,
+  getProjectById,
+  updateProject,
+  deleteProject,
+  updateProjectSerial,
+  // Backwards compatibility aliases
+  createPost: createProject,
+  getAllPosts: getAllProjects,
+  getPostById: getProjectById,
+  updatePost: updateProject,
+  deletePost: deleteProject,
+  updatePostSerial: updateProjectSerial,
 };
+
+export const PostServices = ProjectServices;

@@ -16,11 +16,21 @@ const createPost = catchAsync(
     }
 
     if (req.file) {
-      const uploadRes = await uploadBufferToCloudinary(
-        req.file.buffer,
-        'portfolio'
-      );
-      payload.thumbnail = uploadRes.secure_url;
+      try {
+        const uploadRes = await uploadBufferToCloudinary(
+          req.file.buffer,
+          'portfolio'
+        );
+        payload.thumbnail = uploadRes.secure_url;
+      } catch (err) {
+        console.warn(
+          'Cloudinary upload failed for post, falling back to base64 Data URL:',
+          err
+        );
+        payload.thumbnail = `data:${req.file.mimetype || 'image/jpeg'};base64,${req.file.buffer.toString(
+          'base64'
+        )}`;
+      }
     }
 
     if (payload.serial !== undefined) {
@@ -115,11 +125,21 @@ const updatePost = catchAsync(
     }
 
     if (req.file) {
-      const uploadRes = await uploadBufferToCloudinary(
-        req.file.buffer,
-        'portfolio'
-      );
-      payload.thumbnail = uploadRes.secure_url;
+      try {
+        const uploadRes = await uploadBufferToCloudinary(
+          req.file.buffer,
+          'portfolio'
+        );
+        payload.thumbnail = uploadRes.secure_url;
+      } catch (err) {
+        console.warn(
+          'Cloudinary upload failed for post update, falling back to base64 Data URL:',
+          err
+        );
+        payload.thumbnail = `data:${req.file.mimetype || 'image/jpeg'};base64,${req.file.buffer.toString(
+          'base64'
+        )}`;
+      }
     }
 
     if (payload.serial !== undefined) {
@@ -188,3 +208,5 @@ export const PostController = {
   deletePost,
   updatePostSerial,
 };
+
+export const ProjectController = PostController;

@@ -14,6 +14,10 @@ const moduleRoutes = [
     route: AuthRouter,
   },
   {
+    path: "/project",
+    route: PostRoutes,
+  },
+  {
     path: "/post",
     route: PostRoutes,
   },

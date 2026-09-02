@@ -20,18 +20,22 @@ model Blogs {
   updatedAt  DateTime @default(now())
   Users      Users?   @relation(fields: [usersEmail], references: [email])
   usersEmail String?
+
+  @@map("blogs")
 }
 
 model Users {
   name     String
-  email    String  @id
+  email    String    @id
   password String?
   photo    String
   blogs    Blogs[]
-  posts    Post[]
+  projects Project[]
+
+  @@map("users")
 }
 
-model Post {
+model Project {
   id               Int      @id @default(autoincrement())
   title            String
   description      String
@@ -52,4 +56,5 @@ model Post {
   usersEmail       String?
 
   @@index([serial])
+  @@map("projects")
 }

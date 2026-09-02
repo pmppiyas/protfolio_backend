@@ -1,8 +1,8 @@
-import type { NextFunction, Request, Response } from "express";
-import { StatusCodes } from "http-status-codes";
-import catchAsync from "../../utils/catchAsync.js";
-import sendResponse from "../../utils/sendResponse.js";
-import { AuthServices } from "./user.services.js";
+import type { NextFunction, Request, Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
+import catchAsync from '../../utils/catchAsync.js';
+import sendResponse from '../../utils/sendResponse.js';
+import { AuthServices } from './user.services.js';
 
 const googleLogin = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -11,7 +11,7 @@ const googleLogin = catchAsync(
     sendResponse(res, {
       success: true,
       statusCode: StatusCodes.OK,
-      message: "Google login successfully",
+      message: 'Google login successfully',
       data: login,
     });
   }
@@ -24,7 +24,7 @@ const credentialLogin = catchAsync(
     sendResponse(res, {
       success: true,
       statusCode: StatusCodes.OK,
-      message: "Login successfully",
+      message: 'Login successfully',
       data: login,
     });
   }

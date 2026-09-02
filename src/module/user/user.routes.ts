@@ -1,9 +1,9 @@
-import { Router } from "express";
-import { AuthControllers } from "./user.controller.js";
+import { Router } from 'express';
+import { AuthControllers } from './user.controller.js';
 
 const router = Router();
 
-router.post("/google", AuthControllers.googleLogin);
-router.post("/login", AuthControllers.credentialLogin);
+router.post('/google', AuthControllers.googleLogin);
+router.post('/login', AuthControllers.credentialLogin);
 
-export const AuthRouter = router;
+export const AuthRouter: Router = router;

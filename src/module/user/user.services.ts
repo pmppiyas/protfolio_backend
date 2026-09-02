@@ -1,9 +1,9 @@
-import { Prisma } from "@prisma/client";
-import { prisma } from "../../config/db.js";
+import { Prisma } from '@prisma/client';
+import { prisma } from '../../config/db.js';
 
 const googleLogin = async (data: Prisma.UsersCreateInput) => {
   if (!data.email) {
-    throw new Error("Email is required for Google login.");
+    throw new Error('Email is required for Google login.');
   }
 
   let user = await prisma.users.findUnique({
@@ -24,8 +24,8 @@ const credentialLogin = async (payload: {
   const { email, password } = payload;
 
   if (!email || !password) {
-    throw new Error("Required fields missing!", {
-      cause: "400",
+    throw new Error('Required fields missing!', {
+      cause: '400',
     });
   }
 
@@ -34,15 +34,15 @@ const credentialLogin = async (payload: {
   });
 
   if (!user) {
-    throw new Error("User not found!", {
-      cause: "404",
+    throw new Error('User not found!', {
+      cause: '404',
     });
   }
 
   const isPasswordValid = user.password === password;
 
   if (!isPasswordValid) {
-    throw new Error("Password is wrong");
+    throw new Error('Password is wrong');
   }
 
   const { password: _, ...safeUser } = user;
